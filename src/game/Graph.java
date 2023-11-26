@@ -22,7 +22,6 @@ public class Graph implements Serializable {
     }
 
     /**
-     * 
      * @param cellIndex
      * @return cell coordinates in (row, column) format
      */
@@ -34,10 +33,9 @@ public class Graph implements Serializable {
         initCells();
         initEdges();
         printMatrix();
-        
     }  
 
-    private void initCells(){ 
+    private void initCells() { 
         cells = new ArrayList<>();
         for(int i = 0; i < S ; i++) {
             ArrayList<Cell> row = new ArrayList<>();
@@ -47,6 +45,11 @@ public class Graph implements Serializable {
             cells.add(row);
         }
     }
+    public void setEdge(int cell1, int cell2, Consumer<Edge> fn) {
+        fn.accept(edges.get(cell1).get(cell2));
+        fn.accept(edges.get(cell2).get(cell1));
+    }
+
 
     /**
      * @param fn executes this function on all edges.
@@ -55,18 +58,14 @@ public class Graph implements Serializable {
         for(int i = 0; i < S; i++) {
             for(int j = 0; j < S - 1; j++) {
                 // Vertical edges
-                // Edge between (this) cell and cell on the right side of it 
-                // i * S + j: index of this cell
-                // i * S + j + 1: index of cell to the right 
-                fn.accept(edges.get(i * S + j).get(i * S + j + 1));
-                fn.accept(edges.get(i * S + j + 1).get(i * S + j));
-                
+                int cell1Index = getCellIndex(i, j);
+                int rightNeighbourIndex = getCellIndex(i, j + 1);
+                setEdge(cell1Index, rightNeighbourIndex, fn);
                 
                 // Horizontal edges
-                // j * S + i: index of a cell
-                // j * S + i + S: index of a cell below
-                fn.accept(edges.get(j * S + i).get(j * S + i + S)); 
-                fn.accept(edges.get(j * S + i + S).get(j * S + i));
+                int cell2Index = getCellIndex(j, i);
+                int bottomNeighbourIndex = getCellIndex(j + 1, i);
+                setEdge(cell2Index, bottomNeighbourIndex, fn);
             }
         }
     }
@@ -80,17 +79,15 @@ public class Graph implements Serializable {
             }
             edges.add(row);
         }
-        iterateEdges((edge)->edge.setValid(true));        
+        iterateEdges((edge)->edge.setAreNeighbours(true));        
     }   
-
 
     public void printMatrix() {
         for(int i = 0; i <N; i++) {
             for (int j = 0; j <N; j++) {
-                System.out.print(edges.get(i).get(j).isValid() ? 1 + " " : 0+ " ");
+                System.out.print(edges.get(i).get(j).areNeighbours() ? 1 + " " : 0 + " ");
             }
             System.out.println("");
         }
     }
-    
 }

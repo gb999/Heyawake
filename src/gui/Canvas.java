@@ -86,9 +86,6 @@ public  class Canvas extends JPanel {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        
-    
-            
         g2.setColor(bgColor);
         g2.fillRect(0,0, SIDELENGTH, SIDELENGTH);
         g2.setColor(new Color(0,0,0));

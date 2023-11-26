@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -8,7 +7,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -88,10 +86,12 @@ public class Window extends JFrame {
         add(levelScroller, BorderLayout.CENTER);   
     }
     private Graph selectedGraph = null;
+    
     private void setSelectedGraph(Graph g) {
         if(selectedGraph == g) selectedGraph = null;
         else selectedGraph = g;
     }
+
     private void selectCanvas(ArrayList<Canvas> canvasList, Canvas canvas) {
         boolean prevState = canvas.selected; 
         canvasList.forEach(canv->canv.selected = false);
