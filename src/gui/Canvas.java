@@ -26,7 +26,7 @@ public  class Canvas extends JPanel {
     static {
         colors.put(Cell.State.UNPAINTED, bgColor);
         colors.put(Cell.State.WHITE, new Color(255,255,255));
-        colors.put(Cell.State.BLACK, new Color(0,0,0));
+        colors.put(Cell.State.BLACK, new Color(0,0,0,150));
     }
     boolean selected = false;
 

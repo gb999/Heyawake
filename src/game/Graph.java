@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Graph implements Serializable {
     /**
@@ -109,18 +110,16 @@ public class Graph implements Serializable {
         }
     }
 
-    private void _floodFill(int cellIndex, boolean[] filled) {
+    private void _floodFill(int cellIndex, boolean[] filled, Consumer<Cell> fn) {
             iterateNeighbours(cellIndex, (e, i)-> {
                 if(e.isWall || filled[i]) return;
                 filled[i] = true;
-                getCell(i).nextState();
-                _floodFill(i, filled);
+                fn.accept(getCell(i));
+                _floodFill(i, filled, fn);
             });
     }
-    public void floodFill(int cellIndex) {
+    public void floodFill(int cellIndex, Consumer<Cell> fn) {
         boolean[] filled = new boolean[N];
-
-        _floodFill(cellIndex, filled);
-
+        _floodFill(cellIndex, filled, fn);
     }
 }

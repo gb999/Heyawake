@@ -43,7 +43,9 @@ public class Window extends JFrame {
 
 
     private void initMenu() {
-        setLayout(new BorderLayout());
+        BorderLayout layout =new BorderLayout();
+        layout.setVgap(200);
+        setLayout(layout);
         JPanel menuContainer = new JPanel();
         JButton levelEditorButton = new JButton("Pályaszerkesztő");
         JButton playButton = new JButton("Játék!");
@@ -97,7 +99,6 @@ public class Window extends JFrame {
         canvasList.forEach(canv->canv.selected = false);
         canvas.selected = !prevState;
         canvasList.forEach(canv->canv.repaint());
-        
     }
 
 

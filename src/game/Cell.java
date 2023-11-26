@@ -20,6 +20,7 @@ public class Cell implements Serializable{
             case WHITE: state = State.BLACK; break;
             case BLACK: state = State.UNPAINTED; break;
         }
+        System.out.println("called");
     }
     
 }
