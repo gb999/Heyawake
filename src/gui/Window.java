@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -7,6 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -59,17 +62,17 @@ public class Window extends JFrame {
 
         graphs.forEach(graph -> {
             Canvas canv = new Canvas(graph); 
-    
             levelContainer.add(canv);
-            canv.setPreferredSize(new Dimension(100,100));
+            levelContainer.add(Box.createHorizontalStrut(20));
+    
+            canv.setPreferredSize(new Dimension(150,150));
             canv.repaint();
             canv.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                
-                setSelectedGraph(canv.graph);
-                
-            }
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    setSelectedGraph(canv.graph);
+                    //TODO set selection border
+                }
         });
         });
 

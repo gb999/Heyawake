@@ -82,7 +82,8 @@ public  class Canvas extends JPanel {
     @Override
     public void paint(Graphics g) {
         //this.setSize(SIDELENGTH,SIDELENGTH); // Must set size here
-        // super.paint(g);
+        super.paint(g);
+
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(bgColor);
         g2.fillRect(0,0, SIDELENGTH, SIDELENGTH);
