@@ -19,8 +19,8 @@ import game.Cell;
 import game.Graph;
 
 public  class Canvas extends JPanel {
-    static final int SIDELENGTH = 600;
-    static final int CELLSIZE = SIDELENGTH/6;
+    int SIDELENGTH = 600;
+    int CELLSIZE = SIDELENGTH / 6;
     static final Color bgColor = new Color(100,100,100); 
     static final HashMap<Cell.State, Color> colors = new HashMap<>(); 
     static {
@@ -32,9 +32,10 @@ public  class Canvas extends JPanel {
     Graph graph;
     public Canvas(Graph graph) {
         setLayout(new FlowLayout());
-        this.setSize(SIDELENGTH, SIDELENGTH);
-        setPreferredSize(new Dimension(SIDELENGTH,SIDELENGTH));
         this.graph = graph;
+        CELLSIZE = SIDELENGTH / graph.S;
+        setPreferredSize(new Dimension(SIDELENGTH, SIDELENGTH));
+
         addMouseListener(new ClickListener(this));
     }
     class ClickListener extends MouseAdapter {
@@ -47,7 +48,18 @@ public  class Canvas extends JPanel {
             canvas.mouseClicked(new Point(e.getX(),e.getY()));
             repaint();
         }
-
+    }
+    @Override
+    public void setSize(Dimension d) {
+        super.setSize(d);
+        SIDELENGTH = (int)d.getWidth();
+        CELLSIZE = SIDELENGTH / graph.S;
+    }
+    @Override
+    public void setPreferredSize(Dimension preferredSize) {
+        super.setPreferredSize(preferredSize);
+        SIDELENGTH = (int)preferredSize.getWidth();
+        CELLSIZE = SIDELENGTH / graph.S;
     }
 
     /**
@@ -69,8 +81,8 @@ public  class Canvas extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        this.setSize(SIDELENGTH,SIDELENGTH); // Must set size here
-        super.paint(g);
+        //this.setSize(SIDELENGTH,SIDELENGTH); // Must set size here
+        // super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(bgColor);
         g2.fillRect(0,0, SIDELENGTH, SIDELENGTH);

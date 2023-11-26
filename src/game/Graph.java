@@ -48,6 +48,9 @@ public class Graph implements Serializable {
         }
     }
 
+    /**
+     * @param fn executes this function on all edges.
+     */
     public void iterateEdges(Consumer<Edge> fn) {
         for(int i = 0; i < S; i++) {
             for(int j = 0; j < S - 1; j++) {
@@ -77,9 +80,9 @@ public class Graph implements Serializable {
             }
             edges.add(row);
         }
-
         iterateEdges((edge)->edge.setValid(true));        
     }   
+
 
     public void printMatrix() {
         for(int i = 0; i <N; i++) {
@@ -89,4 +92,5 @@ public class Graph implements Serializable {
             System.out.println("");
         }
     }
+    
 }

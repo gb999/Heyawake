@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -60,6 +61,7 @@ public class Window extends JFrame {
             Canvas canv = new Canvas(graph); 
     
             levelContainer.add(canv);
+            canv.setPreferredSize(new Dimension(100,100));
             canv.repaint();
             canv.addMouseListener(new MouseAdapter() {
             @Override
@@ -77,7 +79,7 @@ public class Window extends JFrame {
         levelScroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         levelScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         add(menuContainer, BorderLayout.NORTH);
-        add(levelScroller, BorderLayout.SOUTH);   
+        add(levelScroller, BorderLayout.CENTER);   
     }
     private Graph selectedGraph = null;
     private void setSelectedGraph(Graph g) {
@@ -107,6 +109,7 @@ public class Window extends JFrame {
         JTextField blackCountField = new JTextField();
 
         JButton saveButton = new JButton("Mentés");
+        JButton cancelButton = new JButton("Mégsem");
 
         JPanel buttonContainer = new JPanel(new GridLayout(0,1));
 
@@ -114,6 +117,7 @@ public class Window extends JFrame {
         buttonContainer.add(blackCellModeButton);
         buttonContainer.add(blackCountField);
         buttonContainer.add(saveButton);
+        buttonContainer.add(cancelButton);
 
         wallModeButton.addActionListener(e-> {
             editor.mode = Editor.Mode.WALL;
@@ -132,6 +136,9 @@ public class Window extends JFrame {
 
         saveButton.addActionListener(e-> {
             editor.saveGraph();
+            menu();
+        });
+        cancelButton.addActionListener(e-> {
             menu();
         });
 
