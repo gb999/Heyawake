@@ -3,6 +3,7 @@ package game;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Graph implements Serializable {
@@ -20,6 +21,10 @@ public class Graph implements Serializable {
     public int getCellIndex(Cell c) {
         return getCellIndex(c.row, c.column);
     }
+    public Cell getCell(int cellIndex) {
+        Point coords = cellIndexToCoordinate(cellIndex);
+        return cells.get(coords.x).get(coords.y);
+    }
 
     /**
      * @param cellIndex
@@ -32,7 +37,6 @@ public class Graph implements Serializable {
     public Graph() {
         initCells();
         initEdges();
-        printMatrix();
     }  
 
     private void initCells() { 
@@ -69,6 +73,20 @@ public class Graph implements Serializable {
             }
         }
     }
+    public void iterateNeighbours(int cellIndex, Consumer<Edge> fn) {
+        edges.get(cellIndex).forEach(e-> {
+            if(e.areNeighbours)
+                fn.accept(e);
+        });
+    }
+    public void iterateNeighbours(int cellIndex, BiConsumer<Edge, Integer> fn) {
+        int i = 0;
+        for(Edge e: edges.get(cellIndex)) {
+            if(e.areNeighbours)
+                fn.accept(e, i);
+            i++;
+        }
+    }
 
     private void initEdges(){
         edges = new ArrayList<>();
@@ -83,11 +101,26 @@ public class Graph implements Serializable {
     }   
 
     public void printMatrix() {
-        for(int i = 0; i <N; i++) {
+        for(int i = 0; i < N; i++) {
             for (int j = 0; j <N; j++) {
                 System.out.print(edges.get(i).get(j).areNeighbours() ? 1 + " " : 0 + " ");
             }
             System.out.println("");
         }
+    }
+
+    private void _floodFill(int cellIndex, boolean[] filled) {
+            iterateNeighbours(cellIndex, (e, i)-> {
+                if(e.isWall || filled[i]) return;
+                filled[i] = true;
+                getCell(i).nextState();
+                _floodFill(i, filled);
+            });
+    }
+    public void floodFill(int cellIndex) {
+        boolean[] filled = new boolean[N];
+
+        _floodFill(cellIndex, filled);
+
     }
 }

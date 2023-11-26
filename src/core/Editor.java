@@ -17,17 +17,20 @@ public class Editor extends Core {
     public void cellClicked(int row, int column) {
         Cell clickedCell = graph.cells.get(row).get(column);
         clickedCell.blackCount = blackCellCount;
-        System.out.println(row + ", "+ column);
     }
 
     @Override
     public void edgeClicked(int neighbour1Index, int neighbour2Index) {
-        Edge e1 = graph.edges.get(neighbour1Index).get(neighbour2Index);
-        Edge e2 = graph.edges.get(neighbour2Index).get(neighbour1Index);
-        e1.isWall = !e1.isWall;
-        e2.isWall = !e2.isWall;
-        System.out.println("edge between " + neighbour1Index + ", " + neighbour2Index);
+        graph.setEdge(neighbour1Index, neighbour2Index, e -> e.isWall = !e.isWall);
     }
-    
-    
+
+    @Override
+    public void saveGraph() {
+        graph.floodFill(0);
+        
+        super.saveGraph();
+    }
+
+
+
 }
