@@ -28,7 +28,8 @@ public  class Canvas extends JPanel {
         colors.put(Cell.State.WHITE, new Color(255,255,255));
         colors.put(Cell.State.BLACK, new Color(0,0,0));
     }
-    
+    boolean selected = false;
+
     Graph graph;
     public Canvas(Graph graph) {
         setLayout(new FlowLayout());
@@ -83,14 +84,22 @@ public  class Canvas extends JPanel {
     public void paint(Graphics g) {
         //this.setSize(SIDELENGTH,SIDELENGTH); // Must set size here
         super.paint(g);
-
         Graphics2D g2 = (Graphics2D) g;
+
+        
+    
+            
         g2.setColor(bgColor);
         g2.fillRect(0,0, SIDELENGTH, SIDELENGTH);
         g2.setColor(new Color(0,0,0));
         paintCells(g2);
         paintGrid(g2);
         paintWalls(g2);
+
+        if(selected) {
+            g2.setColor(new Color(0,255,0, 100));
+            g2.fillRect(0,0, SIDELENGTH, SIDELENGTH);
+        } 
 
         g2.dispose();
     }

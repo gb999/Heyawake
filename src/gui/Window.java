@@ -59,9 +59,11 @@ public class Window extends JFrame {
         JPanel levelContainer = new JPanel();
         levelContainer.setLayout(new BoxLayout(levelContainer, BoxLayout.X_AXIS));
         ArrayList<Graph> graphs = Core.loadGraphs();
+        ArrayList<Canvas> canvasList = new ArrayList<>();
 
         graphs.forEach(graph -> {
             Canvas canv = new Canvas(graph); 
+            canvasList.add(canv);
             levelContainer.add(canv);
             levelContainer.add(Box.createHorizontalStrut(20));
     
@@ -71,7 +73,8 @@ public class Window extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     setSelectedGraph(canv.graph);
-                    //TODO set selection border
+                    selectCanvas(canvasList, canv); 
+
                 }
         });
         });
@@ -86,9 +89,16 @@ public class Window extends JFrame {
     }
     private Graph selectedGraph = null;
     private void setSelectedGraph(Graph g) {
-        selectedGraph = g;
+        if(selectedGraph == g) selectedGraph = null;
+        else selectedGraph = g;
     }
-
+    private void selectCanvas(ArrayList<Canvas> canvasList, Canvas canvas) {
+        boolean prevState = canvas.selected; 
+        canvasList.forEach(canv->canv.selected = false);
+        canvas.selected = !prevState;
+        canvasList.forEach(canv->canv.repaint());
+        
+    }
 
 
     private void game() {
