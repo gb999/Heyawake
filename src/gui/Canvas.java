@@ -22,12 +22,17 @@ public  class Canvas extends JPanel {
     int SIDELENGTH = 600;
     int CELLSIZE = SIDELENGTH / 6;
     static final Color bgColor = new Color(100,100,100); 
+    static final Color green = new Color(0,200,0); 
+    static final Color errorRed = new Color(255, 0,0, 150); 
+
     static final HashMap<Cell.State, Color> colors = new HashMap<>(); 
     static {
         colors.put(Cell.State.UNPAINTED, bgColor);
         colors.put(Cell.State.WHITE, new Color(255,255,255));
         colors.put(Cell.State.BLACK, new Color(0,0,0,150));
     }
+
+
     boolean selected = false;
 
     Graph graph;
@@ -121,7 +126,18 @@ public  class Canvas extends JPanel {
                 Cell cell = graph.cells.get(i).get(j);
                 g2.setColor(colors.get(cell.state));
                 g2.fill(getCellShape(i, j));
-                g2.setColor(new Color(0,255,0));
+
+                
+                if(cell.cellError) {
+                    g2.setColor(errorRed);
+                    g2.fill(getCellShape(i, j));
+                }
+
+                if(cell.numberError) 
+                    g2.setColor(errorRed);
+                else 
+                    g2.setColor(green);
+
                 if(cell.blackCount != 0) {
                     g2.drawString(Integer.toString(cell.blackCount), j * CELLSIZE + CELLSIZE / 2, i * CELLSIZE + CELLSIZE / 2);
                 }

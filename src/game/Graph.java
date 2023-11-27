@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Graph implements Serializable {
     /**
@@ -55,11 +55,19 @@ public class Graph implements Serializable {
         fn.accept(edges.get(cell2).get(cell1));
     }
 
+    public void forEachCell(Consumer<Cell> fn) {
+        for(int i = 0; i < S ; i++) {
+            for(int j = 0; j < S; j++) {
+                fn.accept(cells.get(i).get(j));
+            }
+        }
+    }
+    
 
     /**
      * @param fn executes this function on all edges.
      */
-    public void iterateEdges(Consumer<Edge> fn) {
+    public void forEachEdge(Consumer<Edge> fn) {
         for(int i = 0; i < S; i++) {
             for(int j = 0; j < S - 1; j++) {
                 // Vertical edges
@@ -74,6 +82,32 @@ public class Graph implements Serializable {
             }
         }
     }
+    public class Pair {
+        public int end1;
+        public int end2;
+        Pair(int p1, int p2) {
+            this.end1 = p1;
+            this.end2 = p2;
+        }
+
+    }
+    public void forEachEdge(BiConsumer<Edge, Pair> fn) {
+        for(int i = 0; i < S; i++) {
+            for(int j = 0; j < S - 1; j++) {
+                // Vertical edges
+                int cell1Index = getCellIndex(i, j);
+                int rightNeighbourIndex = getCellIndex(i, j + 1);
+                setEdge(cell1Index, rightNeighbourIndex, e -> fn.accept(e, new Pair(cell1Index, rightNeighbourIndex)));
+                
+                
+                // Horizontal edges
+                int cell2Index = getCellIndex(j, i);
+                int bottomNeighbourIndex = getCellIndex(j + 1, i);
+                setEdge(cell2Index, bottomNeighbourIndex, e -> fn.accept(e, new Pair(cell2Index, bottomNeighbourIndex)));
+            }
+        }
+    }
+
     public void iterateNeighbours(int cellIndex, Consumer<Edge> fn) {
         edges.get(cellIndex).forEach(e-> {
             if(e.areNeighbours)
@@ -98,7 +132,7 @@ public class Graph implements Serializable {
             }
             edges.add(row);
         }
-        iterateEdges((edge)->edge.setAreNeighbours(true));        
+        forEachEdge((edge)->edge.setAreNeighbours(true));        
     }   
 
     public void printMatrix() {
@@ -110,16 +144,48 @@ public class Graph implements Serializable {
         }
     }
 
-    private void _floodFill(int cellIndex, boolean[] filled, Consumer<Cell> fn) {
-            iterateNeighbours(cellIndex, (e, i)-> {
-                if(e.isWall || filled[i]) return;
-                filled[i] = true;
-                fn.accept(getCell(i));
-                _floodFill(i, filled, fn);
-            });
+    private void _floodFill(int cellIndex, boolean[] filled,  Consumer<Cell> fn) {
+        iterateNeighbours(cellIndex, (e, i)-> {
+            if(e.isWall || filled[i]) return;
+            filled[i] = true;
+            fn.accept(getCell(i));
+            _floodFill(i, filled, fn);
+        });
     }
+        
     public void floodFill(int cellIndex, Consumer<Cell> fn) {
         boolean[] filled = new boolean[N];
         _floodFill(cellIndex, filled, fn);
+    }
+
+    private void _conditionalFloodFill(int cellIndex, boolean[] filled,  Predicate<Edge> stopCondition, Consumer<Cell> fn) {
+        iterateNeighbours(cellIndex, (e, i)-> {
+            if(stopCondition.test(e) || filled[i]) return;
+                filled[i] = true;
+                fn.accept(getCell(i));
+                _conditionalFloodFill(i, filled, stopCondition, fn);
+            });
+
+    }
+    public Cell findAny(Predicate<Cell> pred) {
+        for(int i = 0; i < S; i++) {
+            for(int j = 0 ; j < S; j++) {
+                Cell c = cells.get(i).get(j);
+                if(pred.test(c)) return c;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param cellIndex
+     * @param stopCondition stop condition
+     * @param fn
+     */
+    public boolean[] conditionalFloodFill(int cellIndex, Predicate<Edge> stopCondition, Consumer<Cell> fn) {
+        boolean[] filled = new boolean[N];
+        filled[cellIndex] = true;
+        _conditionalFloodFill(cellIndex, filled, stopCondition, fn);
+        return filled;
     }
 }

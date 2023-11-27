@@ -20,7 +20,15 @@ public class Cell implements Serializable{
             case WHITE: state = State.BLACK; break;
             case BLACK: state = State.UNPAINTED; break;
         }
-        System.out.println("called");
     }
     
+    public boolean cellError = false; // Set true if cell has to be painted red
+    public boolean numberError = false; // Set true if number has to be painted red
+
+    public boolean unpainted() {
+        return state == State.UNPAINTED;
+    }
+    public boolean white() {
+        return state == State.WHITE;
+    }
 }

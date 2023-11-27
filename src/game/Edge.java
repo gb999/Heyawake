@@ -7,7 +7,6 @@ public class Edge implements Serializable {
     public boolean isWall = false; 
     public boolean areBlackNeighbours = false; 
     public boolean areWhitekNeighbours = false; 
-    public boolean areRommates = false;
     public boolean areNeighbours = false;
     
     public void setAreNeighbours(boolean value) {
@@ -15,5 +14,11 @@ public class Edge implements Serializable {
     }
     public boolean areNeighbours() {
         return areNeighbours;
+    }
+    public boolean areBlackNeighbours() {
+        return areBlackNeighbours;
+    }
+    public boolean areWhitekNeighbours() {
+        return areWhitekNeighbours;
     }
 }

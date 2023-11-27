@@ -26,11 +26,7 @@ public class Editor extends Core {
 
     @Override
     public void saveGraph() {
-        graph.floodFill(0, Cell::nextState);
-        
         super.saveGraph();
     }
-
-
 
 }
