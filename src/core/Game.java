@@ -5,6 +5,8 @@ package core;
 import java.text.CollationElementIterator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -26,7 +28,6 @@ public class Game extends Core {
         clickedCell.nextState();
         setEdges(clickedCell);
 
-
         checkRules(clickedCell);
         
     }
@@ -45,7 +46,7 @@ public class Game extends Core {
     protected void checkRules(Cell clickedCell) {
         // Check rules
 
-        boolean result ;
+        boolean result;
         checkBlackCountInRoom(clickedCell);
         
         checkAdjacentBlackCells();
@@ -54,9 +55,72 @@ public class Game extends Core {
         if(allPainted()) 
             result = areWhiteCellsInterconnected();
         
-        //checkWhiteLines()
+        checkWhiteLines();
 
     }
+
+    class WhiteLineFSM {
+        boolean wereWhiteNeighbours = false;
+        Set<Cell> lastCells = new HashSet<>();
+        int lastCell1Index; 
+        int lastCell2Index; 
+        Edge lastEdge = null;
+        
+
+        public void nextState(Edge e, Cell c1, Cell c2) {
+            if(lastCell1Index == graph.getCellIndex(c1) && lastCell2Index == graph.getCellIndex(c2)) return;
+            lastCell1Index = graph.getCellIndex(c1);
+            lastCell2Index = graph.getCellIndex(c2);
+            lastEdge = e;
+            System.out.println(graph.getCellIndex(c1) + " " + graph.getCellIndex(c2));
+            if(!e.isWall) {
+                lastCells.clear();
+                wereWhiteNeighbours = false;
+                return;
+            }
+
+            if(wereWhiteNeighbours) {
+                if(e.areWhitekNeighbours) {
+                    // WHITE LINE FOUND
+                    lastCells.add(c1);
+                    lastCells.add(c2);
+                    setError();
+                    return;
+                } else{
+                    wereWhiteNeighbours = false;
+                    lastCells.clear();
+                    return;
+                }
+            } else {
+                if(e.areWhitekNeighbours) {
+                    wereWhiteNeighbours = true;
+                    lastCells.add(c1); 
+                    lastCells.add(c2); 
+                } else {
+                    lastCells.clear();
+                    wereWhiteNeighbours = false;
+                    return;
+                    // Nothing
+                }
+            }
+        }
+
+        public void setError() {
+            lastCells.forEach(c -> c.cellError = true);
+
+        }
+    }
+
+    private WhiteLineFSM whiteLineFSM = new WhiteLineFSM();
+    private void checkWhiteLines() {
+        graph.forEachHorizontalEdge((e, p) -> {
+            whiteLineFSM.nextState(e, graph.getCell(p.end1), graph.getCell(p.end2));
+        });
+        graph.forEachVerticalEdge((e, p) -> {
+            whiteLineFSM.nextState(e, graph.getCell(p.end1), graph.getCell(p.end2));
+        });
+    }
+
     protected boolean allPainted() {
         return graph.findAny(Cell::unpainted) == null;
     }
