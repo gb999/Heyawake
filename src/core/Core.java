@@ -12,20 +12,25 @@ import game.Graph;
 
 public abstract class Core {
     public Graph graph;
+
+    /**
+     * Creates a new graph to the core
+     */
     protected Core() {
         graph = new Graph();
     }
 
     /**
-     * Called when a cell is clicked on the cnavas
-     * @param row
-     * @param column
+     * Called when a cell is clicked on the canvas, when extended, class has to implement this method
+     * @param row The clicked cells row
+     * @param column The clicked cells column
      */
     public abstract void cellClicked(int row, int column); 
 
     /**
-     * Called when an edge is clicked on the canvas (only in editor wall mode)
-     * @param edgeIndex
+     * Called when an edge is clicked on the canvas (only in wall editor mode), when extended, class has to implement this method
+     * @param neighbour1Index The first neigbours index in the neigbour matrix
+     * @param neighbour2Index The second neigbours index in the neigbour matrix
      */
     public abstract void edgeClicked(int neighbour1Index, int neighbour2Index);
 
