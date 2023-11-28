@@ -63,6 +63,27 @@ public class Graph implements Serializable {
         }
     }
     
+    public void forEachHorizontalEdge(BiConsumer<Edge, Pair> fn) {
+        for(int i = 0; i < S; i++) {
+            for(int j = 0; j < S - 1; j++) {
+                // Horizontal edges
+                int cell2Index = getCellIndex(j, i);
+                int bottomNeighbourIndex = getCellIndex(j + 1, i);
+                setEdge(cell2Index, bottomNeighbourIndex, e -> fn.accept(e, new Pair(cell2Index, bottomNeighbourIndex)));
+            }
+        }    
+    }
+    
+    public void forEachVerticalEdge(BiConsumer<Edge, Pair> fn) {
+        for(int i = 0; i < S; i++) {
+            for(int j = 0; j < S - 1; j++) {
+                // Vertical edges
+                int cell1Index = getCellIndex(i, j);
+                int rightNeighbourIndex = getCellIndex(i, j + 1);
+                setEdge(cell1Index, rightNeighbourIndex, e -> fn.accept(e, new Pair(cell1Index, rightNeighbourIndex)));
+            }
+        }    
+    }
 
     /**
      * @param fn executes this function on all edges.
@@ -139,6 +160,7 @@ public class Graph implements Serializable {
         for(int i = 0; i < N; i++) {
             for (int j = 0; j <N; j++) {
                 System.out.print(edges.get(i).get(j).areNeighbours() ? 1 + " " : 0 + " ");
+                // System.out.print(edges.get(i).get(j).areWhitekNeighbours() ? 1 + " " : 0 + " ");
             }
             System.out.println("");
         }
