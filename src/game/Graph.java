@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+
 /**
  * Stores a single graph
  * Serializable because of saves
