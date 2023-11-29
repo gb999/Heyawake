@@ -113,6 +113,7 @@ public class Game extends Core {
             lastCell1Index = graph.getCellIndex(c1);
             lastCell2Index = graph.getCellIndex(c2);
 
+            
             if(!wasWhiteWall) {
                 if(e.areWhitekNeighbours && e.isWall) {
                     wasWhiteWall = true;
@@ -183,7 +184,7 @@ public class Game extends Core {
         Cell firstWhite = graph.findAny(Cell::white);
         if(firstWhite == null) return true;
         int firstWhiteIndex = graph.getCellIndex(firstWhite);
-        boolean[] filled = graph.conditionalFloodFill(firstWhiteIndex, Predicate.not(Edge::areWhiteNeighbours), (e)->{});
+        boolean[] filled = graph.conditionalFloodFill(firstWhiteIndex, Predicate.not(Edge::areWhiteNeighbours), e -> {});
         int fillCount = 0;
         for(boolean b : filled) {
             if(b) fillCount++;
@@ -223,8 +224,8 @@ public class Game extends Core {
         int currentBlackCount = 0; 
 
         Cell counterCell; // Cell which stores the expected number of black cells
-        void increaseBlackCount() { currentBlackCount++; };
-        void setExpectedBlackCount(Cell c) { expectedBlackCount = c.blackCount; counterCell = c;};
+        void increaseBlackCount() { currentBlackCount++; }
+        void setExpectedBlackCount(Cell c) { expectedBlackCount = c.blackCount; counterCell = c;}
 
         boolean check() {
             if(expectedBlackCount == -1) 
@@ -249,7 +250,7 @@ public class Game extends Core {
         int cellIndex = graph.getCellIndex(clickedCell);
         BlackCountCheck roomCheck = new BlackCountCheck();
         graph.floodFill(cellIndex, cell -> {
-            if(cell.state == Cell.State.BLACK) roomCheck.increaseBlackCount();;
+            if(cell.state == Cell.State.BLACK) roomCheck.increaseBlackCount();
             if(cell.blackCount != -1) roomCheck.setExpectedBlackCount(cell); 
         });
         roomCheck.setNumberError(!roomCheck.check());
