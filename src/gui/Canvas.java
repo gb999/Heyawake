@@ -15,9 +15,12 @@ import java.util.HashMap;
 
 import javax.swing.JPanel;
 
-import game.Cell;
-import game.Graph;
+import core.gameobjects.Cell;
+import core.gameobjects.Graph;
 
+/**
+ * Class for drawing the contents of a board on the screen.
+ */
 public  class Canvas extends JPanel {
     int SIDELENGTH = 600;
     int CELLSIZE = SIDELENGTH / 6;
@@ -55,12 +58,14 @@ public  class Canvas extends JPanel {
             repaint();
         }
     }
+    
     @Override
     public void setSize(Dimension d) {
         super.setSize(d);
         SIDELENGTH = (int)d.getWidth();
         CELLSIZE = SIDELENGTH / graph.S;
     }
+
     @Override
     public void setPreferredSize(Dimension preferredSize) {
         super.setPreferredSize(preferredSize);
@@ -75,8 +80,17 @@ public  class Canvas extends JPanel {
     protected void mouseClicked(Point p) {}; 
 
     /**
-     * 
-     * @param p
+     * @param p point on board
+     * @return true if point is on the board
+     */
+    protected boolean pointOnBoard(Point p) {
+        return p.x >= 0 && p.x < SIDELENGTH  
+            && p.y >= 0 && p.y < SIDELENGTH;
+    }
+
+    /**
+     * Converts position on the canvas to a cell coordinate
+     * @param p point on the canvas
      * @return Cell coordinate in (row, column) format
      */
     protected Point canvasPositionToCellCoordinate(Point p) {
@@ -106,7 +120,7 @@ public  class Canvas extends JPanel {
         g2.dispose();
     }
 
-    private void paintGrid(Graphics2D g2) {
+    protected void paintGrid(Graphics2D g2) {
         for(int i = 0; i < 5; i++) {
             int c = (i+1) * CELLSIZE;
             g2.drawLine(c,0,c,SIDELENGTH);
@@ -114,17 +128,18 @@ public  class Canvas extends JPanel {
         }
     }
 
-    private Rectangle getCellShape(int row, int column) {
+    protected Rectangle getCellShape(int row, int column) {
         return new Rectangle(column * CELLSIZE, row * CELLSIZE, CELLSIZE, CELLSIZE);
     }
 
-    private void paintCells(Graphics2D g2) {
+    protected void paintCells(Graphics2D g2) {
         Color savedColor = g2.getColor();
         g2.setFont(g2.getFont().deriveFont((float)CELLSIZE/3));
-        for(int i = 0; i < graph.S; i++) {
-            for(int j = 0; j < graph.S; j++) {
-                Cell cell = graph.cells.get(i).get(j);
-                g2.setColor(colors.get(cell.state));
+
+        graph.forEachCell(cell -> {
+            g2.setColor(colors.get(cell.state));
+                int i = cell.getRow();
+                int j = cell.getColumn();
                 g2.fill(getCellShape(i, j));
 
                 
@@ -141,14 +156,16 @@ public  class Canvas extends JPanel {
                 if(cell.blackCount != -1) {
                     g2.drawString(Integer.toString(cell.blackCount), j * CELLSIZE + CELLSIZE / 2, i * CELLSIZE + CELLSIZE / 2);
                 }
-            }
-        }
+        });
+
         g2.setColor(savedColor);
     }
 
-    private void paintWalls(Graphics2D g2) {
+    protected void paintWalls(Graphics2D g2) {
         Stroke savedStroke = g2.getStroke();
         g2.setStroke(new BasicStroke(3));
+
+        // It is easier to draw with for loops than with iterateEdges
         for(int i = 0; i < graph.S; i++) {
             int S = graph.S;
             for(int j = 0; j < S - 1; j++) {

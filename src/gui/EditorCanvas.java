@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import core.Editor;
+import core.gameobjects.Graph.Pair;
 
 public class EditorCanvas extends Canvas {
     Editor editor;
@@ -13,26 +14,31 @@ public class EditorCanvas extends Canvas {
         this.editor = editor;
     }
 
+    /**
+     * Called when mouse is clicked on the canvas. 
+     * Calls the Editor's methods.
+     */
     @Override
     protected void mouseClicked(Point p) {
+        if(!pointOnBoard(p)) return;
         if(editor.mode == Editor.Mode.BLACKCELL) {
             Point cell = canvasPositionToCellCoordinate(p);
             editor.cellClicked(cell.x, cell.y);
         } else if(editor.mode == Editor.Mode.WALL) {
             // get Edge
-            int[] clickedEdgeNeighbours = getClickedEdge(p);
+            Pair clickedEdgeNeighbours = getClickedEdge(p);
             if(clickedEdgeNeighbours != null) {
-                editor.edgeClicked(clickedEdgeNeighbours[0], clickedEdgeNeighbours[1]);
+                editor.edgeClicked(clickedEdgeNeighbours.end1, clickedEdgeNeighbours.end2);
             }
         }
     }
 
     /**
-     * 
-     * @param clickPos
-     * @return clicked cell index and closest neighbouring cell index as a 2 element array
+     * Calculates the closest edget of the mouse click.
+     * @param clickPos position of the mouse click.
+     * @return clicked cell index and closest neighbouring cell index as a Pair, 
      */
-    private int[] getClickedEdge(Point clickPos) {
+    protected Pair getClickedEdge(Point clickPos) {
         // Coordinates relative to top left of Cell
         int y = clickPos.x % CELLSIZE;
         int x = clickPos.y % CELLSIZE;
@@ -55,7 +61,7 @@ public class EditorCanvas extends Canvas {
             }
         }
 
-        if(minDistance > 10) return null;
+        if(minDistance > 15) return null;
 
         // closest neighbouring cell to click
         int offsetX = 0; 
@@ -87,8 +93,7 @@ public class EditorCanvas extends Canvas {
         int closestNeighbourIndex = graph.getCellIndex(closestNeighbour.x, closestNeighbour.y);
 
         
-        int[] result = {clickedCellIndex, closestNeighbourIndex};
-        return result;
+        return new Pair(clickedCellIndex, closestNeighbourIndex);
     }
     
 }

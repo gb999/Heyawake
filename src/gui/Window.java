@@ -14,13 +14,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 
 import core.Core;
 import core.Editor;
 import core.Game;
-import game.Graph;
+import core.gameobjects.Graph;
 
+/** 
+ * User interface.
+ */
 public class Window extends JFrame {
     public Window() {
         initWindow();
@@ -48,8 +50,8 @@ public class Window extends JFrame {
         layout.setVgap(200);
         setLayout(layout);
         JPanel menuContainer = new JPanel();
-        JButton levelEditorButton = new JButton("Pályaszerkesztő");
-        JButton playButton = new JButton("Játék!");
+        JButton levelEditorButton = new JButton("Level Editor");
+        JButton playButton = new JButton("Play!");
 
         levelEditorButton.addActionListener(e -> levelEditor());
         playButton.addActionListener(e -> game());
@@ -114,27 +116,26 @@ public class Window extends JFrame {
         setLayout(new BorderLayout());
         Game game = selectedGraph == null ? new Game() : new Game(selectedGraph);
         Canvas canvas = new GameCanvas(game);
-        JButton returnButton = new JButton("Vissza");
+        JButton returnButton = new JButton("Return");
         returnButton.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if(game.ended) menu();
+                if(game.hasEnded()) menu();
             };
         });
         add(returnButton, BorderLayout.EAST);
         add(canvas, BorderLayout.WEST);
-
     }
     
     private void initLevelEditor() {
         Editor editor = selectedGraph == null ? new Editor() : new Editor(selectedGraph);
         
         Canvas canvas = new EditorCanvas(editor);
-        JButton wallModeButton = new JButton("Fal festés");
-        JButton blackCellModeButton = new JButton("Fekete ccellák számának megadása");
+        JButton wallModeButton = new JButton("Paint Walls");
+        JButton blackCellModeButton = new JButton("Set Black Cell Vount in Room");
         JTextField blackCountField = new JTextField();
 
-        JButton saveButton = new JButton("Mentés");
-        JButton cancelButton = new JButton("Mégsem");
+        JButton saveButton = new JButton("Save");
+        JButton cancelButton = new JButton("Cancel");
 
         JPanel buttonContainer = new JPanel(new GridLayout(0,1));
 
@@ -154,7 +155,7 @@ public class Window extends JFrame {
                 int blackCount = Integer.parseInt(blackCountStr);
                 editor.blackCellCount = blackCount;
             } catch (NumberFormatException ex) {
-                System.out.println("wrong number format");
+                System.out.println("Wrong number format");
             }
             editor.mode = Editor.Mode.BLACKCELL;
         });
@@ -167,7 +168,6 @@ public class Window extends JFrame {
             menu();
         });
 
-
         setLayout(new BorderLayout());
         add(canvas, BorderLayout.WEST);
         add(buttonContainer, BorderLayout.EAST);
@@ -178,6 +178,5 @@ public class Window extends JFrame {
         initLevelEditor();
         revalidate();
         repaint();
-        
     }
 }

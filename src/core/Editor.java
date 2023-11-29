@@ -1,9 +1,12 @@
 package core;
 
 
-import game.Cell;
-import game.Graph;
+import core.gameobjects.Cell;
+import core.gameobjects.Graph;
 
+/**
+ * Class for editing boards. Doesn't check validity of boards.
+ */
 public class Editor extends Core {
     public enum Mode {BLACKCELL, WALL}
     public Mode mode;
@@ -27,13 +30,11 @@ public class Editor extends Core {
 
     @Override
     public void edgeClicked(int neighbour1Index, int neighbour2Index) {
-        graph.setEdge(neighbour1Index, neighbour2Index, e -> e.isWall = !e.isWall);
+        graph.acceptEdge(neighbour1Index, neighbour2Index, e -> e.isWall = !e.isWall);
     }
 
     @Override
     public void saveGraph() {
-
         super.saveGraph();
     }
-
 }

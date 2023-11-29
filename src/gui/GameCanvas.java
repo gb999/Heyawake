@@ -16,14 +16,16 @@ public class GameCanvas extends Canvas {
 
     @Override
     protected void mouseClicked(Point p) {
+        if(!pointOnBoard(p)) return; 
         Point clickedCell = canvasPositionToCellCoordinate(p);
         game.cellClicked(clickedCell.x,clickedCell.y);
         repaint();
     }
+    
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if(game.ended) {
+        if(game.hasEnded()) {
             // Not drawing... ??
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(new Color(255,255,255));

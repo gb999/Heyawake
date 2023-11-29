@@ -8,8 +8,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import game.Graph;
+import core.gameobjects.Graph;
 
+/**
+ * Shared logic of the Game and Editor
+ */
 public abstract class Core {
     public Graph graph;
     protected Core() {
@@ -27,11 +30,10 @@ public abstract class Core {
      * Called when an edge is clicked on the canvas (only in editor wall mode)
      * @param edgeIndex
      */
-    public abstract void edgeClicked(int neighbour1Index, int neighbour2Index);
+    public void edgeClicked(int neighbour1Index, int neighbour2Index) {};
 
     static final String fileName = "levels.ser";
     public void saveGraph() {
-        // Append to the end of file
         ArrayList<Graph> graphs = Core.loadGraphs();
         if(graphs == null) graphs = new ArrayList<>();
         graphs.add(this.graph);
