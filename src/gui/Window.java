@@ -1,26 +1,19 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
 import core.Core;
 import core.Editor;
 import core.Game;
 import game.Graph;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 public class Window extends JFrame {
+    private Graph selectedGraph = null;
+
     public Window() {
         initWindow();
         menu();
@@ -33,7 +26,7 @@ public class Window extends JFrame {
         setVisible(true);
 
     }
-    
+
     private void menu() {
         getContentPane().removeAll();
         initMenu();
@@ -41,9 +34,8 @@ public class Window extends JFrame {
         repaint();
     }
 
-
     private void initMenu() {
-        BorderLayout layout =new BorderLayout();
+        BorderLayout layout = new BorderLayout();
         layout.setVgap(200);
         setLayout(layout);
         JPanel menuContainer = new JPanel();
@@ -52,7 +44,7 @@ public class Window extends JFrame {
 
         levelEditorButton.addActionListener(e -> levelEditor());
         playButton.addActionListener(e -> game());
-        
+
         menuContainer.add(levelEditorButton);
         menuContainer.add(playButton);
 
@@ -62,43 +54,42 @@ public class Window extends JFrame {
         ArrayList<Canvas> canvasList = new ArrayList<>();
 
         graphs.forEach(graph -> {
-            Canvas canv = new Canvas(graph); 
+            Canvas canv = new Canvas(graph);
             canvasList.add(canv);
             levelContainer.add(canv);
             levelContainer.add(Box.createHorizontalStrut(20));
-    
-            canv.setPreferredSize(new Dimension(150,150));
+
+            canv.setPreferredSize(new Dimension(150, 150));
             canv.repaint();
             canv.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     setSelectedGraph(canv.graph);
-                    selectCanvas(canvasList, canv); 
+                    selectCanvas(canvasList, canv);
 
                 }
-        });
+            });
         });
 
-        JScrollPane levelScroller = new JScrollPane(levelContainer);  
+        JScrollPane levelScroller = new JScrollPane(levelContainer);
 
-        
+
         levelScroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         levelScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         add(menuContainer, BorderLayout.NORTH);
-        add(levelScroller, BorderLayout.CENTER);   
+        add(levelScroller, BorderLayout.CENTER);
     }
-    private Graph selectedGraph = null;
-    
+
     private void setSelectedGraph(Graph g) {
-        if(selectedGraph == g) selectedGraph = null;
+        if (selectedGraph == g) selectedGraph = null;
         else selectedGraph = g;
     }
 
     private void selectCanvas(ArrayList<Canvas> canvasList, Canvas canvas) {
-        boolean prevState = canvas.selected; 
-        canvasList.forEach(canv->canv.selected = false);
+        boolean prevState = canvas.selected;
+        canvasList.forEach(canv -> canv.selected = false);
         canvas.selected = !prevState;
-        canvasList.forEach(canv->canv.repaint());
+        canvasList.forEach(canv -> canv.repaint());
     }
 
 
@@ -114,7 +105,7 @@ public class Window extends JFrame {
         Canvas canvas = new GameCanvas(game);
         add(canvas);
     }
-    
+
     private void initLevelEditor() {
         Editor editor = new Editor();
         Canvas canvas = new EditorCanvas(editor);
@@ -125,7 +116,7 @@ public class Window extends JFrame {
         JButton saveButton = new JButton("Mentés");
         JButton cancelButton = new JButton("Mégsem");
 
-        JPanel buttonContainer = new JPanel(new GridLayout(0,1));
+        JPanel buttonContainer = new JPanel(new GridLayout(0, 1));
 
         buttonContainer.add(wallModeButton);
         buttonContainer.add(blackCellModeButton);
@@ -133,26 +124,25 @@ public class Window extends JFrame {
         buttonContainer.add(saveButton);
         buttonContainer.add(cancelButton);
 
-        wallModeButton.addActionListener(e-> {
+        wallModeButton.addActionListener(e -> {
             editor.mode = Editor.Mode.WALL;
         });
 
-        blackCellModeButton.addActionListener(e-> {
+        blackCellModeButton.addActionListener(e -> {
             String blackCountStr = blackCountField.getText();
             try {
-                int blackCount = Integer.parseInt(blackCountStr);
-                editor.blackCellCount = blackCount;
+                editor.blackCellCount = Integer.parseInt(blackCountStr);
             } catch (NumberFormatException ex) {
                 System.out.println("wrong number format");
             }
             editor.mode = Editor.Mode.BLACKCELL;
         });
 
-        saveButton.addActionListener(e-> {
+        saveButton.addActionListener(e -> {
             editor.saveGraph();
             menu();
         });
-        cancelButton.addActionListener(e-> {
+        cancelButton.addActionListener(e -> {
             menu();
         });
 
@@ -167,6 +157,6 @@ public class Window extends JFrame {
         initLevelEditor();
         revalidate();
         repaint();
-        
+
     }
 }
