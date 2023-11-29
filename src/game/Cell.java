@@ -8,7 +8,7 @@ public class Cell implements Serializable{
     int row;
     int column;
 
-    public int blackCount = 0;
+    public int blackCount = -1;
     Cell(int row, int column) {
         this.row = row;
         this.column = column;

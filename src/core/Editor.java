@@ -2,14 +2,19 @@ package core;
 
 
 import game.Cell;
-import game.Edge;
+import game.Graph;
 
 public class Editor extends Core {
     public enum Mode {BLACKCELL, WALL}
     public Mode mode;
-    public int blackCellCount = 0;
+    public int blackCellCount = -1;
     public Editor() {
         super();
+        this.mode = Mode.WALL;
+    }
+    public Editor(Graph g) {
+        super();
+        graph = g;
         this.mode = Mode.WALL;
     }
 
@@ -17,6 +22,7 @@ public class Editor extends Core {
     public void cellClicked(int row, int column) {
         Cell clickedCell = graph.cells.get(row).get(column);
         clickedCell.blackCount = blackCellCount;
+
     }
 
     @Override
@@ -26,6 +32,7 @@ public class Editor extends Core {
 
     @Override
     public void saveGraph() {
+
         super.saveGraph();
     }
 

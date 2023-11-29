@@ -177,6 +177,8 @@ public class Graph implements Serializable {
         
     public void floodFill(int cellIndex, Consumer<Cell> fn) {
         boolean[] filled = new boolean[N];
+        fn.accept(getCell(cellIndex));
+        filled[cellIndex] = true;
         _floodFill(cellIndex, filled, fn);
     }
 
@@ -207,6 +209,7 @@ public class Graph implements Serializable {
     public boolean[] conditionalFloodFill(int cellIndex, Predicate<Edge> stopCondition, Consumer<Cell> fn) {
         boolean[] filled = new boolean[N];
         filled[cellIndex] = true;
+        fn.accept(getCell(cellIndex));
         _conditionalFloodFill(cellIndex, filled, stopCondition, fn);
         return filled;
     }

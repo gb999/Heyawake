@@ -138,7 +138,7 @@ public  class Canvas extends JPanel {
                 else 
                     g2.setColor(green);
 
-                if(cell.blackCount != 0) {
+                if(cell.blackCount != -1) {
                     g2.drawString(Integer.toString(cell.blackCount), j * CELLSIZE + CELLSIZE / 2, i * CELLSIZE + CELLSIZE / 2);
                 }
             }

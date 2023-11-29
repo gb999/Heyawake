@@ -116,7 +116,8 @@ public class Window extends JFrame {
     }
     
     private void initLevelEditor() {
-        Editor editor = new Editor();
+        Editor editor = selectedGraph == null ? new Editor() : new Editor(selectedGraph);
+        
         Canvas canvas = new EditorCanvas(editor);
         JButton wallModeButton = new JButton("Fal festés");
         JButton blackCellModeButton = new JButton("Fekete ccellák számának megadása");
