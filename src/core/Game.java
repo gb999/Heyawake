@@ -1,6 +1,5 @@
 package core;
 
-
 import game.Cell;
 import game.Edge;
 import game.Graph;
@@ -25,16 +24,14 @@ public class Game extends Core {
         Cell clickedCell = graph.cells.get(row).get(column);
         clickedCell.nextState();
         setEdges(clickedCell);
-
         checkRules(clickedCell);
-
     }
 
     protected void setEdges(Cell clickedCell) {
         int clickedCellIndex = graph.getCellIndex(clickedCell);
         graph.iterateNeighbours(graph.getCellIndex(clickedCell), (e, i) -> {
             Cell checkedCell = graph.getCell(i);
-            graph.setEdge(clickedCellIndex, i, b -> {
+            graph.acceptEdge(clickedCellIndex, i, b -> {
                 b.areBlackNeighbours = (clickedCell.state == Cell.State.BLACK && checkedCell.state == Cell.State.BLACK);
                 b.areWhiteNeighbours = (clickedCell.state == Cell.State.WHITE && checkedCell.state == Cell.State.WHITE);
             });
@@ -42,29 +39,32 @@ public class Game extends Core {
     }
 
     protected void checkRules(Cell clickedCell) {
-        // Check rules
-
-        boolean result;
         checkBlackCountInRoom(clickedCell);
 
         checkAdjacentBlackCells();
 
-
-        if (allPainted())
-            result = areWhiteCellsInterconnected();
-
         checkWhiteLines();
 
+        if(allPainted()) {
+            areWhiteCellsInterconnected();
+            if(graph.findAny(c -> (c.cellError || c.numberError)) == null)
+                endGame();
+        }
+    }
+
+    public boolean ended = false;
+    private void endGame() {
+        ended = true;
     }
 
     private void checkWhiteLines() {
         graph.forEachHorizontalEdge((e, p) -> {
             whiteLineFSM.nextState(e, graph.getCell(p.end1), graph.getCell(p.end2));
-            whiteLineFSM.setError();
+            whiteLineFSM.setErrors();
         });
         graph.forEachVerticalEdge((e, p) -> {
             whiteLineFSM.nextState(e, graph.getCell(p.end1), graph.getCell(p.end2));
-            whiteLineFSM.setError();
+            whiteLineFSM.setErrors();
         });
     }
 
@@ -81,19 +81,18 @@ public class Game extends Core {
      */
     private boolean areWhiteCellsInterconnected() {
         Cell firstWhite = graph.findAny(Cell::white);
-        if (firstWhite == null) return true;
+        if(firstWhite == null) return true;
         int firstWhiteIndex = graph.getCellIndex(firstWhite);
-        boolean[] filled = graph.conditionalFloodFill(firstWhiteIndex, Predicate.not(Edge::areWhiteNeighbours), (e) -> {
-        });
+        boolean[] filled = graph.conditionalFloodFill(firstWhiteIndex, Predicate.not(Edge::areWhiteNeighbours), (e)->{});
         int fillCount = 0;
-        for (boolean b : filled) {
-            if (b) fillCount++;
+        for(boolean b : filled) {
+            if(b) fillCount++;
         }
 
         int whiteCount = 0;
-        for (int i = 0; i < graph.S; i++) {
-            for (int j = 0; j < graph.S; j++) {
-                if (graph.cells.get(i).get(j).white()) whiteCount++;
+        for(int i = 0; i < graph.S; i++) {
+            for(int j = 0; j < graph.S; j++) {
+                if(graph.cells.get(i).get(j).white()) whiteCount++;
             }
         }
 
@@ -117,7 +116,7 @@ public class Game extends Core {
         BlackCountCheck roomCheck = new BlackCountCheck();
         graph.floodFill(cellIndex, cell -> {
             if (cell.state == Cell.State.BLACK) roomCheck.increaseBlackCount();
-            if (cell.blackCount != 0) roomCheck.setExpectedBlackCount(cell);
+            if (cell.blackCount > -1) roomCheck.setExpectedBlackCount(cell);
         });
         roomCheck.setNumberError(!roomCheck.check());
 
@@ -128,78 +127,8 @@ public class Game extends Core {
         throw new UnsupportedOperationException("Edges should not be clicked inside game!");
     }
 
-    class WhiteLineFSM {
-        boolean wasWhiteWall = false;
-        Set<Cell> lastCells = new HashSet<>();
-        int lastCell1Index;
-        int lastCell2Index;
-        Edge lastEdge = null;
-
-        boolean error = false;
-
-        public void nextState(Edge e, Cell c1, Cell c2) {
-            if (lastCell1Index == graph.getCellIndex(c1) && lastCell2Index == graph.getCellIndex(c2)) return;
-            lastCell1Index = graph.getCellIndex(c1);
-            lastCell2Index = graph.getCellIndex(c2);
-            lastEdge = e;
-            System.out.println(graph.getCellIndex(c1) + " " + graph.getCellIndex(c2));
-            if (!e.areWhiteNeighbours && !e.areBlackNeighbours) {
-                lastCells.clear();
-                wasWhiteWall = false;
-                return;
-            }
-
-            if (wasWhiteWall) {
-                if (e.areWhiteNeighbours) {
-                    if (e.isWall) {
-                        // WHITE Fault LINE FOUND
-                        lastCells.add(c1);
-                        lastCells.add(c2);
-                        error = true;
-                    } else {
-                        lastCells.add(c1);
-                        lastCells.add(c2);
-                    }
-                }
-            } else {
-                if (e.areWhiteNeighbours) {
-                    if (e.isWall) {
-                        wasWhiteWall = true;
-                    }
-                    lastCells.add(c1);
-                    lastCells.add(c2);
-                }
-            }
-        }
-
-        public void setError() {
-            lastCells.forEach(c -> c.cellError = error);
-
-        }
-    }
-
-    protected class AdjacentBlackCheck {
-
-        boolean isErroneous = false;
-        Cell prevCell = null;
-
-        public void setErroneous(boolean isErroneous) {
-            this.isErroneous = true;
-        }
-
-        public void setPrevCell(Cell c) {
-            prevCell = c;
-        }
-
-        public void setPrevCellError(boolean b) {
-            if (prevCell != null)
-                prevCell.cellError = b;
-        }
-
-    }
-
-    protected class BlackCountCheck {
-        int expectedBlackCount = 0;
+    protected static class BlackCountCheck {
+        int expectedBlackCount = -1;
         int currentBlackCount = 0;
 
         Cell counterCell;
@@ -214,7 +143,7 @@ public class Game extends Core {
         }
 
         boolean check() {
-            if (expectedBlackCount == 0)
+            if (expectedBlackCount == -1)
                 return true;
 
             return expectedBlackCount == currentBlackCount;
@@ -225,4 +154,58 @@ public class Game extends Core {
         }
     }
 
+    class WhiteLineFSM {
+        boolean wasWhiteWall = false;
+        Set<Cell> lastCells = new HashSet<>();
+        int lastCell1Index;
+        int lastCell2Index;
+        boolean error = false;
+
+        public void nextState(Edge e, Cell c1, Cell c2) {
+            if (lastCell1Index == graph.getCellIndex(c1) && lastCell2Index == graph.getCellIndex(c2)) return;
+
+            if (lastCell1Index != graph.getCellIndex(c1) && lastCell1Index != graph.getCellIndex(c2)
+                && lastCell2Index != graph.getCellIndex(c1) && lastCell2Index != graph.getCellIndex(c2)) {
+                error = false;
+                wasWhiteWall = false;
+                lastCells.clear();
+            }
+
+            lastCell1Index = graph.getCellIndex(c1);
+            lastCell2Index = graph.getCellIndex(c2);
+
+            if (!wasWhiteWall) {
+                if (e.areWhiteNeighbours) {
+                    if (e.isWall) {
+                        wasWhiteWall = true;
+                        addLastCells(c1,c2);
+                    }
+                } else {
+                    addLastCells(c1,c2);
+                }
+            } else {
+                if (e.areWhiteNeighbours) {
+                    if (e.isWall) {
+                        addLastCells(c1,c2);
+                        error = true;
+                    }
+                } else {
+                    error = false;
+                    wasWhiteWall = false;
+                    lastCells.clear();
+                }
+            }
+        }
+        public void addLastCells(Cell c1, Cell c2){
+            lastCells.add(c1);
+            lastCells.add(c2);
+        }
+
+        public void setErrors() {
+            lastCells.forEach(c -> {
+                if (error) c.cellError = true;
+            });
+
+        }
+    }
 }

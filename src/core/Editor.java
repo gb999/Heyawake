@@ -10,7 +10,7 @@ public class Editor extends Core {
      * Stores a number
      * When the editor accepts a click for a cell, it writes this number on it
      */
-    public int blackCellCount = 0;
+    public int blackCellCount = -1;
 
     /**
      * The default mode for the editor is wall painting
@@ -39,7 +39,7 @@ public class Editor extends Core {
      */
     @Override
     public void edgeClicked(int neighbour1Index, int neighbour2Index) {
-        graph.setEdge(neighbour1Index, neighbour2Index, e -> e.isWall = !e.isWall);
+        graph.acceptEdge(neighbour1Index, neighbour2Index, e -> e.isWall = !e.isWall);
     }
 
     /**

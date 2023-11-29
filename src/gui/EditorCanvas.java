@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class EditorCanvas extends Canvas {
-    Editor editor;
+    final Editor editor;
 
     EditorCanvas(Editor editor) {
         super(editor.graph);
@@ -28,17 +28,14 @@ public class EditorCanvas extends Canvas {
         }
     }
 
-    /**
-     * @param clickPos
-     * @return clicked cell index and closest neighbouring cell index as a 2 element array
-     */
+
     private int[] getClickedEdge(Point clickPos) {
         // Coordinates relative to top left of Cell
-        int y = clickPos.x % cellLength;
-        int x = clickPos.y % cellLength;
+        int y = clickPos.x % CELLSIZE;
+        int x = clickPos.y % CELLSIZE;
 
         // Find min distance edge
-        ArrayList<Integer> dArr = new ArrayList<>(Arrays.asList(y, x, cellLength - y, cellLength - x));
+        ArrayList<Integer> dArr = new ArrayList<>(Arrays.asList(y, x, CELLSIZE - y, CELLSIZE - x));
         int minDistanceIndex = 0;
         int minDistance = dArr.get(minDistanceIndex);
 

@@ -17,7 +17,7 @@ public class Cell implements Serializable {
     /**
      * Stores that how much cell must be painted BLACK in the same room as the cell is in
      */
-    public int blackCount = 0;
+    public int blackCount = -1;
 
     /**
      * When the game detect a fault in the solving of the graph, the variable is set true and must be painted with red
@@ -32,12 +32,12 @@ public class Cell implements Serializable {
     /**
      * Stores the y coordinate of the cell on the grid
      */
-    int row;
+    final int row;
 
     /**
      * Stores the x coordinate of the cell on the grid
      */
-    int column;
+    final int column;
 
     /**
      * A cell must contain the coordinates on the grid, without it has none representation value

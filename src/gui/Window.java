@@ -89,7 +89,7 @@ public class Window extends JFrame {
         boolean prevState = canvas.selected;
         canvasList.forEach(canv -> canv.selected = false);
         canvas.selected = !prevState;
-        canvasList.forEach(canv -> canv.repaint());
+        canvasList.forEach(Component::repaint);
     }
 
 
@@ -124,9 +124,7 @@ public class Window extends JFrame {
         buttonContainer.add(saveButton);
         buttonContainer.add(cancelButton);
 
-        wallModeButton.addActionListener(e -> {
-            editor.mode = Editor.Mode.WALL;
-        });
+        wallModeButton.addActionListener(e -> editor.mode = Editor.Mode.WALL);
 
         blackCellModeButton.addActionListener(e -> {
             String blackCountStr = blackCountField.getText();
@@ -142,9 +140,7 @@ public class Window extends JFrame {
             editor.saveGraph();
             menu();
         });
-        cancelButton.addActionListener(e -> {
-            menu();
-        });
+        cancelButton.addActionListener(e -> menu());
 
 
         setLayout(new BorderLayout());
