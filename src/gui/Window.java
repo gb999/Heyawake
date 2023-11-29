@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import core.Core;
 import core.Editor;
@@ -110,9 +111,18 @@ public class Window extends JFrame {
     }
 
     private void initGame() {
+        setLayout(new BorderLayout());
         Game game = selectedGraph == null ? new Game() : new Game(selectedGraph);
         Canvas canvas = new GameCanvas(game);
-        add(canvas);
+        JButton returnButton = new JButton("Vissza");
+        returnButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if(game.ended) menu();
+            };
+        });
+        add(returnButton, BorderLayout.EAST);
+        add(canvas, BorderLayout.WEST);
+
     }
     
     private void initLevelEditor() {

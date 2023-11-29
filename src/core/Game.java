@@ -1,7 +1,6 @@
 package core;
 
 
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -26,9 +25,7 @@ public class Game extends Core {
         Cell clickedCell = graph.cells.get(row).get(column);
         clickedCell.nextState();
         setEdges(clickedCell);
-
         checkRules(clickedCell);
-        
     }
     protected void setEdges(Cell clickedCell) {
         int clickedCellIndex = graph.getCellIndex(clickedCell);
@@ -43,19 +40,22 @@ public class Game extends Core {
     
 
     protected void checkRules(Cell clickedCell) {
-        // Check rules
-
-        boolean result;
         checkBlackCountInRoom(clickedCell);
         
         checkAdjacentBlackCells();
         
-
-        if(allPainted()) 
-            result = areWhiteCellsInterconnected();
-        
         checkWhiteLines();
 
+        if(allPainted()) {
+            areWhiteCellsInterconnected();
+            if(graph.findAny(c -> (c.cellError || c.numberError)) == null)
+                endGame();
+        }
+    }
+
+    public boolean ended = false;
+    private void endGame() {
+        ended = true;
     }
 
     class WhiteLineFSM {
@@ -69,12 +69,11 @@ public class Game extends Core {
             if(lastCell1Index == graph.getCellIndex(c1) && lastCell2Index == graph.getCellIndex(c2)) return;
 
             if(lastCell1Index != graph.getCellIndex(c1) && lastCell1Index != graph.getCellIndex(c2)
-            && lastCell2Index != graph.getCellIndex(c1) && lastCell2Index != graph.getCellIndex(c2)
-             ){
-                 error = false;
-                 wasWhiteWall = false;
+            && lastCell2Index != graph.getCellIndex(c1) && lastCell2Index != graph.getCellIndex(c2)){
+                error = false;
+                wasWhiteWall = false;
                 lastCells.clear();
-             } 
+            } 
             lastCell1Index = graph.getCellIndex(c1);
             lastCell2Index = graph.getCellIndex(c2);
 
@@ -87,7 +86,6 @@ public class Game extends Core {
                     lastCells.add(c1);
                     lastCells.add(c2);
                 } 
-                return;
             } else if (wasWhiteWall){
                 if(e.areWhitekNeighbours && e.isWall) {
                     lastCells.add(c1);
@@ -101,16 +99,13 @@ public class Game extends Core {
                     wasWhiteWall = false;
                     lastCells.clear();
                 }
-                return;
             }
-            error = false;
         }
 
         public void setErrors() {
             lastCells.forEach(c -> {
                 if(error) c.cellError =  true ;
             });
-
         }
     }
 
@@ -140,7 +135,7 @@ public class Game extends Core {
         Cell firstWhite = graph.findAny(Cell::white);
         if(firstWhite == null) return true;
         int firstWhiteIndex = graph.getCellIndex(firstWhite);
-        boolean[] filled = graph.conditionalFloodFill(firstWhiteIndex, Predicate.not(Edge::areWhitekNeighbours), (e)->{});
+        boolean[] filled = graph.conditionalFloodFill(firstWhiteIndex, Predicate.not(Edge::areWhiteNeighbours), (e)->{});
         int fillCount = 0;
         for(boolean b : filled) {
             if(b) fillCount++;
@@ -156,7 +151,6 @@ public class Game extends Core {
         return fillCount == whiteCount;
     }
 
-    
     private void checkAdjacentBlackCells() {
         graph.forEachCell(cell->cell.cellError = false);
 
@@ -198,8 +192,6 @@ public class Game extends Core {
         roomCheck.setNumberError(!roomCheck.check());
 
     }
-
-
 
     @Override
     public final void edgeClicked(int neighbour1Index, int neighbour2Index) {

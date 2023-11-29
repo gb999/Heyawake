@@ -18,7 +18,7 @@ public class Edge implements Serializable {
     public boolean areBlackNeighbours() {
         return areBlackNeighbours;
     }
-    public boolean areWhitekNeighbours() {
+    public boolean areWhiteNeighbours() {
         return areWhitekNeighbours;
     }
 }
