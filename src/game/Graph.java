@@ -7,13 +7,32 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+/**
+ * Stores a single graph
+ * Serializable because of saves
+ */
 public class Graph implements Serializable {
+
     /**
-     * Grid Size
+     * Stores the length of the grid in cells
      */
     public final int S = 6;
+
+    /**
+     * Number of cells in the grid
+     */
     public final int N = S * S;
+
+    /**
+     * Stores the cells in an arraylist
+     * Cells can be identified by they column and row variable
+     */
     public ArrayList<ArrayList<Cell>> cells;
+
+    /**
+     * The edges of the grid are stored in a neighbour matrix
+     * Every cell in it contains an edge, but only the ones with the areNeighbours set to tue is considered a real edge
+     */
     public ArrayList<ArrayList<Edge>> edges;
 
     public Graph() {
@@ -115,7 +134,6 @@ public class Graph implements Serializable {
                 int rightNeighbourIndex = getCellIndex(i, j + 1);
                 setEdge(cell1Index, rightNeighbourIndex, e -> fn.accept(e, new Pair(cell1Index, rightNeighbourIndex)));
 
-
                 // Horizontal edges
                 int cell2Index = getCellIndex(j, i);
                 int bottomNeighbourIndex = getCellIndex(j + 1, i);
@@ -156,7 +174,6 @@ public class Graph implements Serializable {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 System.out.print(edges.get(i).get(j).areNeighbours() ? 1 + " " : 0 + " ");
-                // System.out.print(edges.get(i).get(j).areWhitekNeighbours() ? 1 + " " : 0 + " ");
             }
             System.out.println();
         }
@@ -216,6 +233,5 @@ public class Graph implements Serializable {
             this.end1 = p1;
             this.end2 = p2;
         }
-
     }
 }
