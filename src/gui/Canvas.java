@@ -11,31 +11,33 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
+import java.util.EnumMap;
 
 import javax.swing.JPanel;
 
-import core.gameobjects.Cell;
-import core.gameobjects.Graph;
+import logic.gameobjects.Cell;
+import logic.gameobjects.Graph;
 
 /**
  * Class for drawing the contents of a board on the screen.
  */
 public  class Canvas extends JPanel {
-    int SIDELENGTH = 600;
-    int CELLSIZE = SIDELENGTH / 6;
+    protected int SIDELENGTH = 600;
+    protected int CELLSIZE = SIDELENGTH / 6;
     static final Color bgColor = new Color(100,100,100); 
     static final Color green = new Color(0,200,0); 
     static final Color errorRed = new Color(255, 0,0, 150); 
 
-    static final HashMap<Cell.State, Color> colors = new HashMap<>(); 
+    static final EnumMap<Cell.State, Color> colors = new EnumMap<>(Cell.State.class); 
     static {
         colors.put(Cell.State.UNPAINTED, bgColor);
         colors.put(Cell.State.WHITE, new Color(255,255,255));
         colors.put(Cell.State.BLACK, new Color(0,0,0,150));
     }
 
-
+    /**
+     * Set to true if selected in level selector.
+     */
     boolean selected = false;
 
     Graph graph;
@@ -77,7 +79,9 @@ public  class Canvas extends JPanel {
      * Children of this class have to override this to handle mouse clicks
      * @param p
      */
-    protected void mouseClicked(Point p) {}; 
+    protected void mouseClicked(Point p) {
+        // Default Canvas does nothing on mouse click 
+    } 
 
     /**
      * @param p point on board
@@ -96,7 +100,7 @@ public  class Canvas extends JPanel {
     protected Point canvasPositionToCellCoordinate(Point p) {
         int row = (int)Math.floor(p.getY() / CELLSIZE);
         int column = (int)Math.floor(p.getX() / CELLSIZE);
-        return new Point(row,column);
+        return new Point(row, column);
     } 
 
     @Override
@@ -133,7 +137,7 @@ public  class Canvas extends JPanel {
     }
 
     protected void paintCells(Graphics2D g2) {
-        Color savedColor = g2.getColor();
+        final Color savedColor = g2.getColor();
         g2.setFont(g2.getFont().deriveFont((float)CELLSIZE/3));
 
         graph.forEachCell(cell -> {
@@ -162,12 +166,12 @@ public  class Canvas extends JPanel {
     }
 
     protected void paintWalls(Graphics2D g2) {
-        Stroke savedStroke = g2.getStroke();
+        final Stroke savedStroke = g2.getStroke();
         g2.setStroke(new BasicStroke(3));
 
         // It is easier to draw with for loops than with iterateEdges
         for(int i = 0; i < graph.S; i++) {
-            int S = graph.S;
+            final int S = graph.S;
             for(int j = 0; j < S - 1; j++) {
                 // paint vertical edges
                 if(graph.edges.get(i * S + j).get(i * S + j + 1).isWall)

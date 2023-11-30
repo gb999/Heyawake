@@ -5,12 +5,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
-import core.Game;
+import logic.Game;
 
 public class GameCanvas extends Canvas {
     Game game;
     public GameCanvas(Game game) {
-        super(game.graph);
+        super(game.getGraph());
         this.game = game;
     }
 

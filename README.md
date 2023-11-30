@@ -1,18 +1,14 @@
-## Getting Started
+# Heyawake (HeJavaKe..)
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
 
-## Folder Structure
 
-The workspace contains two folders by default, where:
+![Level Editor](docs/image.png)
+Level Editor
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+![Main Menu](docs/image-1.png)
+Main Menu with Level Selector
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+![Error Checking](docs/image-2.png)
+The Game with error checking
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+![An Incorrect Solution](docs/image-3.png)

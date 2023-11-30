@@ -1,4 +1,4 @@
-package core;
+package logic;
 
 
 import java.io.FileInputStream;
@@ -7,14 +7,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
-import core.gameobjects.Graph;
+import logic.gameobjects.Graph;
 
 /**
  * Shared logic of the Game and Editor
  */
 public abstract class Core {
-    public Graph graph;
+    protected Graph graph;
+    public Graph getGraph() {
+        return graph;
+    }
+
     protected Core() {
         graph = new Graph();
     }
@@ -30,16 +35,16 @@ public abstract class Core {
      * Called when an edge is clicked on the canvas (only in editor wall mode)
      * @param edgeIndex
      */
-    public void edgeClicked(int neighbour1Index, int neighbour2Index) {};
+    public void edgeClicked(int neighbour1Index, int neighbour2Index) {}
 
-    static final String fileName = "levels.ser";
+    static final String FILENAME = "levels.ser";
     public void saveGraph() {
-        ArrayList<Graph> graphs = Core.loadGraphs();
+        List<Graph> graphs = Core.loadGraphs();
         if(graphs == null) graphs = new ArrayList<>();
         graphs.add(this.graph);
         ObjectOutputStream oos = null;
         try {
-            oos = new ObjectOutputStream(new FileOutputStream(fileName));
+            oos = new ObjectOutputStream(new FileOutputStream(FILENAME));
             // Write the object to the file
             oos.writeObject(graphs);
         } catch (IOException e) {
@@ -53,11 +58,11 @@ public abstract class Core {
         }
     }
     
-    public static ArrayList<Graph> loadGraphs() {
+    public static List<Graph> loadGraphs() {
         ArrayList<Graph> graphs = new ArrayList<>();
         ObjectInputStream ois = null;
         try {
-            ois = new ObjectInputStream(new FileInputStream(fileName));
+            ois = new ObjectInputStream(new FileInputStream(FILENAME));
             graphs = (ArrayList<Graph>)ois.readObject();
 
         } catch (IOException e) {

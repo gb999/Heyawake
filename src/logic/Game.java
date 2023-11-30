@@ -1,13 +1,13 @@
-package core;
+package logic;
 
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import core.gameobjects.Cell;
-import core.gameobjects.Edge;
-import core.gameobjects.Graph;
+import logic.gameobjects.Cell;
+import logic.gameobjects.Edge;
+import logic.gameobjects.Graph;
 
 /**
  * Game logic
@@ -62,11 +62,16 @@ public class Game extends Core {
         
         checkWhiteLines();
 
-        if(allPainted()) {
-            areWhiteCellsInterconnected();
-            if(graph.findAny(c -> (c.cellError || c.numberError)) == null)
-                endGame();
+        if(allPainted() && areWhiteCellsInterconnected() && areErrorsRemaining()) {
+            endGame();
         }
+    }
+
+    /**
+     * @return true if there is a cell error or a number error anywhere on the board
+     */
+    protected boolean areErrorsRemaining() {
+        return graph.findAny(c -> (c.cellError || c.numberError)) != null;
     }
 
     protected boolean ended = false;

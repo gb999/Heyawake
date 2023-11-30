@@ -1,8 +1,8 @@
-package core;
+package logic;
 
 
-import core.gameobjects.Cell;
-import core.gameobjects.Graph;
+import logic.gameobjects.Cell;
+import logic.gameobjects.Graph;
 
 /**
  * Class for editing boards. Doesn't check validity of boards.

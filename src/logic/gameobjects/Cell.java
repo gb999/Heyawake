@@ -1,9 +1,9 @@
-package core.gameobjects;
+package logic.gameobjects;
 
 import java.io.Serializable;
 
 /**
- * Represents a cell on the board.
+ * Represents a cell on the board. 
  */
 public class Cell implements Serializable{
     public enum State {BLACK, WHITE, UNPAINTED}
@@ -61,5 +61,4 @@ public class Cell implements Serializable{
         return state == State.WHITE;
     }
 
-    
 }

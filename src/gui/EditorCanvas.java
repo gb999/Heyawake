@@ -4,13 +4,13 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import core.Editor;
-import core.gameobjects.Graph.Pair;
+import logic.Editor;
+import logic.gameobjects.Graph.Pair;
 
 public class EditorCanvas extends Canvas {
     Editor editor;
     EditorCanvas(Editor editor) {
-        super(editor.graph);
+        super(editor.getGraph());
         this.editor = editor;
     }
 

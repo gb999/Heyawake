@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -15,10 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import core.Core;
-import core.Editor;
-import core.Game;
-import core.gameobjects.Graph;
+import logic.Core;
+import logic.Editor;
+import logic.Game;
+import logic.gameobjects.Graph;
 
 /** 
  * User interface.
@@ -61,7 +62,7 @@ public class Window extends JFrame {
 
         JPanel levelContainer = new JPanel();
         levelContainer.setLayout(new BoxLayout(levelContainer, BoxLayout.X_AXIS));
-        ArrayList<Graph> graphs = Core.loadGraphs();
+        List<Graph> graphs = Core.loadGraphs();
         ArrayList<Canvas> canvasList = new ArrayList<>();
 
         graphs.forEach(graph -> {

@@ -1,4 +1,4 @@
-package core.gameobjects;
+package logic.gameobjects;
 
 import java.awt.Point;
 import java.io.Serializable;
