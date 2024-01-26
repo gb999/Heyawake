@@ -1,6 +1,6 @@
 # Heyawake (HeJavaKe..)
 ### *A 4 day project for sharpening Java skills.*
-I had some interesting algorithms in mind, I wanted to try for checking the rules of the Heyawake puzzle. I also have some disgust for checking boundaries of boards, so I came up with an interesting (or maybe overcomplicated) way of representing the game. A graph is used.
+I had some interesting algorithms in mind, I wanted to try for checking the rules of the Heyawake puzzle. I also have some disgust for checking boundaries of boards, so I came up with an interesting (or maybe overcomplicated) way of representing the game, a graph.
 
 
 
